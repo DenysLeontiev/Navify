@@ -14,8 +14,6 @@ export class LocationTrackerComponent {
 
   @ViewChild('speed') speedElement?: ElementRef<HTMLSpanElement>;
   @ViewChild('distanceCovered') distanceCoveredElement?: ElementRef<HTMLSpanElement>;
-  @ViewChild('latitude') latitudeElement?: ElementRef<HTMLSpanElement>;
-  @ViewChild('longitude') longitudeElement?: ElementRef<HTMLSpanElement>;
 
   public coordinates: Coordinate[] = [];
 
@@ -89,18 +87,16 @@ export class LocationTrackerComponent {
 
     this.coordinates.push(coordinate);
 
-    if (this.latitudeElement && this.longitudeElement && this.speedElement) {
-      this.latitudeElement.nativeElement.innerText = coordinate.latitude.toFixed(6);
-      this.longitudeElement.nativeElement.innerText = coordinate.longitude.toFixed(6);
+    if (this.speedElement && this.distanceCoveredElement) {
       this.speedElement.nativeElement.innerText = coordinate.speed?.toFixed(2)!;
 
       let distance = 0;
 
-      for(let i = 1; i < this.coordinates.length - 1; i++) {
+      for (let i = 0; i < this.coordinates.length - 1; i++) {
         distance += this.calculateDistance(this.coordinates[i], this.coordinates[i + 1]);
       }
 
-      this.distanceCoveredElement!.nativeElement.innerText = distance?.toFixed(2)!;
+      this.distanceCoveredElement.nativeElement.innerText = distance?.toFixed(2)!;
     }
 
     this.buildMap(coordinate);
@@ -110,6 +106,7 @@ export class LocationTrackerComponent {
     const latLng: [number, number] = [coordinate.latitude, coordinate.longitude];
 
     this.polyline.addLatLng(latLng);
+
 
     if (this.coordinates.length === 1) {
       if (this.startMarker) this.map.removeLayer(this.startMarker);
@@ -122,7 +119,7 @@ export class LocationTrackerComponent {
     console.error(`ERROR(${error.code}): ${error.message}`);
   }
 
-  private calculateDistance(firstCoordinate: Coordinate, secondCoordinate: Coordinate):number {
+  private calculateDistance(firstCoordinate: Coordinate, secondCoordinate: Coordinate): number {
     var R = 6371000; // Radius of the earth in m
     var dLat = this.deg2rad(firstCoordinate.latitude - secondCoordinate.latitude);  // deg2rad below
     var dLon = this.deg2rad(firstCoordinate.longitude - secondCoordinate.longitude);
@@ -136,7 +133,7 @@ export class LocationTrackerComponent {
     return d;
   }
 
-  private deg2rad(deg: number):number {
+  private deg2rad(deg: number): number {
     return deg * (Math.PI / 180)
   }
 }
