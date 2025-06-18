@@ -1,1 +1,49 @@
-/* You can add global styles to this file, and also import other style files */
+@use 'styles/variables' as *;
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: $color-background;
+    color: $color-text;
+}
+
+
+button {
+  background-color: $color-primary;
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: darken($color-primary, 10%);
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+input, textarea, select {
+  padding: 0.5rem;
+  border: 2px solid $color-secondary;
+  border-radius: 0.5rem;
+  outline: none;
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.2);
+  }
+}
+
+.card {
+  background-color: $color-accent;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
