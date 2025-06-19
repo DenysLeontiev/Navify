@@ -13,5 +13,13 @@
         <button class="end-btn" (click)="endJourney()">End Journey</button>
     </div>
 
+    <div class="map-selector">
+        <label for="mapType">Map Type:</label>
+        <select id="mapType" (change)="onMapTypeChange($event)">
+            <option value="street">Street</option>
+            <option value="satellite">Satellite</option>
+        </select>
+    </div>
+
     <div class="map-container" id="map"></div>
 </div>

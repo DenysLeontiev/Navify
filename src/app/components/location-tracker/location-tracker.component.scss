@@ -17,6 +17,16 @@ h1 {
     color: #5BBCFF;
 }
 
+.map-selector {
+    margin: 1rem 0;
+
+    select {
+        padding: 0.5rem;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+}
+
 .tracker-card {
     background-color: #FFD1E3;
     border-radius: 1rem;

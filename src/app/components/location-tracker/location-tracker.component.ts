@@ -49,6 +49,18 @@ export class LocationTrackerComponent {
     this.setTrackingState(TrackingState.NotTracking);
   }
 
+  private currentTileLayer: L.TileLayer = this.tileLayers.street;
+
+  public onMapTypeChange(event: Event): void {
+    const selectedType = (event.target as HTMLSelectElement).value as keyof typeof this.tileLayers;
+
+    if (this.map && this.tileLayers[selectedType]) {
+      this.map.removeLayer(this.currentTileLayer);
+      this.currentTileLayer = this.tileLayers[selectedType];
+      this.currentTileLayer.addTo(this.map);
+    }
+  }
+
   public get currentTrackingStateString(): string {
     return TrackingState[this.trackingState];
   }
