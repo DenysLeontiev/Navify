@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import L from 'leaflet';
 
@@ -13,7 +13,7 @@ import { calculateAverageSpeed, calculateTotalDistanceInMeters } from '../../hel
   templateUrl: './location-tracker.component.html',
   styleUrl: './location-tracker.component.scss'
 })
-export class LocationTrackerComponent {
+export class LocationTrackerComponent implements AfterViewInit {
 
   @ViewChild('speed') speedElement?: ElementRef<HTMLSpanElement>;
   @ViewChild('averageSpeed') averageSpeedElement?: ElementRef<HTMLSpanElement>;
@@ -49,6 +49,10 @@ export class LocationTrackerComponent {
 
   constructor() {
     this.setTrackingState(TrackingState.NotTracking);
+  }
+
+  ngAfterViewInit(): void {
+    this.initializeMapIfNeeded();
   }
 
   public onMapTypeChange(event: Event): void {
@@ -91,16 +95,16 @@ export class LocationTrackerComponent {
   private initializeMapIfNeeded(): void {
     if (this.map) return;
 
-    this.map = L.map('map').setView([this.coordinates[0].latitude, this.coordinates[0].longitude], 13);
-    this.tileLayers.street.addTo(this.map);
-    this.polyline = L.polyline([], { color: 'blue', weight: 5 }).addTo(this.map);
+    window.navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
+      this.map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 13);
+      this.tileLayers.street.addTo(this.map);
+      this.polyline = L.polyline([], { color: 'blue', weight: 5 }).addTo(this.map);
+    });
   }
 
   private onLocationSuccess(position: GeolocationPosition): void {
     const coord = this.mapPositionToCoordinate(position);
     this.coordinates.push(coord);
-
-    this.initializeMapIfNeeded();
 
     this.updateUI(coord);
     this.updateMap(coord);
