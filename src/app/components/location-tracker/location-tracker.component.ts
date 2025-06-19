@@ -101,8 +101,8 @@ export class LocationTrackerComponent {
 
   private updateUI(coord: Coordinate): void {
     this.setText(`${(coord.speed ?? 0).toFixed(2)} km/h`, this.speedElement);
-    this.setText(`${calculateTotalDistanceInMeters(this.coordinates).toFixed(2)} km`, this.distanceCoveredElement);
     this.setText(`${calculateAverageSpeed(this.coordinates).toFixed(2)} km/h`, this.averageSpeedElement);
+    this.setText(`${(calculateTotalDistanceInMeters(this.coordinates) / 1000).toFixed(2)} m`, this.distanceCoveredElement);
   }
 
   private updateMap(coord: Coordinate): void {

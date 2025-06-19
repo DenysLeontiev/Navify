@@ -1,17 +1,14 @@
 import { Coordinate } from "../models/coordinate";
 
 export function calculateAverageSpeed(coordinates: Coordinate[]): number {
-    let averageSpeed: number = 0;
+    const validSpeeds = coordinates
+        .map(c => c.speed)
+        .filter((s): s is number => s != null && !isNaN(s));
 
-    coordinates.forEach((coord) => {
-        if (coord.speed) {
-            averageSpeed += coord.speed;
-        }
-    });
+    if (validSpeeds.length === 0) return 0;
 
-    averageSpeed /= coordinates.length;
-
-    return averageSpeed;
+    const sum = validSpeeds.reduce((acc, speed) => acc + speed, 0);
+    return sum / validSpeeds.length;
 }
 
 export function calculateTotalDistanceInMeters(coordinates: Coordinate[]): number {
