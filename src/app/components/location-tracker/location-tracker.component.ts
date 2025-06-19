@@ -41,7 +41,7 @@ export class LocationTrackerComponent {
 
   private readonly geoOptions: PositionOptions = {
     enableHighAccuracy: true,
-    timeout: 5000,
+    timeout: 10000,
     maximumAge: 0
   };
 
@@ -55,7 +55,6 @@ export class LocationTrackerComponent {
 
   public startJourney(): void {
     this.setTrackingState(TrackingState.Tracking);
-    this.initializeMapIfNeeded();
 
     this.watchId = navigator.geolocation.watchPosition(
       position => this.onLocationSuccess(position),
@@ -80,7 +79,7 @@ export class LocationTrackerComponent {
   private initializeMapIfNeeded(): void {
     if (this.map) return;
 
-    this.map = L.map('map').setView([50.45, 30.52], 13);
+    this.map = L.map('map').setView([this.coordinates[0].latitude, this.coordinates[0].longitude], 13);
     this.tileLayers.street.addTo(this.map);
     this.polyline = L.polyline([], { color: 'blue', weight: 5 }).addTo(this.map);
   }
@@ -88,6 +87,8 @@ export class LocationTrackerComponent {
   private onLocationSuccess(position: GeolocationPosition): void {
     const coord = this.mapPositionToCoordinate(position);
     this.coordinates.push(coord);
+
+    this.initializeMapIfNeeded();
 
     this.updateUI(coord);
     this.updateMap(coord);
@@ -100,7 +101,7 @@ export class LocationTrackerComponent {
 
   private updateUI(coord: Coordinate): void {
     this.setText(`${(coord.speed ?? 0).toFixed(2)} km/h`, this.speedElement);
-    this.setText( `${calculateTotalDistanceInMeters(this.coordinates).toFixed(2)} km`, this.distanceCoveredElement);
+    this.setText(`${calculateTotalDistanceInMeters(this.coordinates).toFixed(2)} km`, this.distanceCoveredElement);
     this.setText(`${calculateAverageSpeed(this.coordinates).toFixed(2)} km/h`, this.averageSpeedElement);
   }
 
