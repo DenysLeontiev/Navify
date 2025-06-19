@@ -68,6 +68,9 @@ export class LocationTrackerComponent implements AfterViewInit {
   }
 
   public startJourney(): void {
+
+    this.coordinates = [];
+    this.updateUI(null);
     this.setTrackingState(TrackingState.Tracking);
 
     this.watchId = navigator.geolocation.watchPosition(
@@ -113,10 +116,15 @@ export class LocationTrackerComponent implements AfterViewInit {
     console.error(`Geolocation error (${error.code}): ${error.message}`);
   }
 
-  private updateUI(coord: Coordinate): void {
-    this.setText(`${((coord.speed ?? 0) * 3.6).toFixed(2)} km/h`, this.speedElement);
-    this.setText(`${(calculateAverageSpeed(this.coordinates) * 3.6).toFixed(2)} km/h`, this.averageSpeedElement);
-    this.setText(`${(calculateTotalDistanceInMeters(this.coordinates) / 1000).toFixed(2)} km`, this.distanceCoveredElement);
+  private updateUI(coord: Coordinate | null): void {
+
+    let speed: number = coord?.speed ?? 0;
+    let averageSpeed: number = calculateAverageSpeed(this.coordinates);
+    let totalDistanceInMeters: number = calculateTotalDistanceInMeters(this.coordinates) / 1000;
+
+    this.setText(`${speed} km/h`, this.speedElement);
+    this.setText(`${averageSpeed.toFixed(2)} km/h`, this.averageSpeedElement);
+    this.setText(`${totalDistanceInMeters.toFixed(2)} km`, this.distanceCoveredElement);
   }
 
   private updateMap(coord: Coordinate): void {
