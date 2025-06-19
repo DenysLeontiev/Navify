@@ -45,11 +45,11 @@ export class LocationTrackerComponent {
     maximumAge: 0
   };
 
+  private currentTileLayer: L.TileLayer = this.tileLayers.street;
+
   constructor() {
     this.setTrackingState(TrackingState.NotTracking);
   }
-
-  private currentTileLayer: L.TileLayer = this.tileLayers.street;
 
   public onMapTypeChange(event: Event): void {
     const selectedType = (event.target as HTMLSelectElement).value as keyof typeof this.tileLayers;
@@ -112,9 +112,9 @@ export class LocationTrackerComponent {
   }
 
   private updateUI(coord: Coordinate): void {
-    this.setText(`${(coord.speed ?? 0).toFixed(2)} km/h`, this.speedElement);
-    this.setText(`${calculateAverageSpeed(this.coordinates).toFixed(2)} km/h`, this.averageSpeedElement);
-    this.setText(`${(calculateTotalDistanceInMeters(this.coordinates) / 1000).toFixed(2)} m`, this.distanceCoveredElement);
+    this.setText(`${((coord.speed ?? 0) * 3.6).toFixed(2)} km/h`, this.speedElement);
+    this.setText(`${(calculateAverageSpeed(this.coordinates) * 3.6).toFixed(2)} km/h`, this.averageSpeedElement);
+    this.setText(`${(calculateTotalDistanceInMeters(this.coordinates) / 1000).toFixed(2)} km`, this.distanceCoveredElement);
   }
 
   private updateMap(coord: Coordinate): void {
