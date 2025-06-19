@@ -1,0 +1,52 @@
+@use '../../../styles/variables' as *;
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $color-primary;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+
+    .navbar-logo img {
+        height: 40px;
+    }
+
+    .navbar-links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+
+            &:hover {
+                background-color: $color-secondary;
+            }
+        }
+    }
+
+    .navbar-actions {
+        button {
+            background-color: white;
+            color: $color-primary;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+
+            &:hover {
+                background-color: lighten($color-primary, 10%);
+                color: white;
+            }
+        }
+    }
+}
