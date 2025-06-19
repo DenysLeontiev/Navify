@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Coordinate } from '../../models/coordinate';
 import L from 'leaflet';
 import { CommonModule } from '@angular/common';
+import { TrackingState } from '../../models/enums/trackingState';
 
 @Component({
   selector: 'app-location-tracker',
@@ -16,6 +17,8 @@ export class LocationTrackerComponent {
   @ViewChild('distanceCovered') distanceCoveredElement?: ElementRef<HTMLSpanElement>;
 
   public coordinates: Coordinate[] = [];
+
+  private currentTrackingState: TrackingState = TrackingState.NotTracking;
 
   private watchId: number | null = null;
 
@@ -40,7 +43,12 @@ export class LocationTrackerComponent {
     maximumAge: 0,
   };
 
+  constructor() {
+    this.setTrackingStatus(TrackingState.NotTracking);
+  }
+
   public startJourney(): void {
+    this.setTrackingStatus(TrackingState.Tracking);
     if (!this.map) {
       this.map = L.map('map').setView([50.45, 30.52], 13);
       this.layers.street.addTo(this.map);
@@ -57,6 +65,7 @@ export class LocationTrackerComponent {
 
   public endJourney(): void {
     if (this.watchId) {
+      this.setTrackingStatus(TrackingState.Finished);
       navigator.geolocation.clearWatch(this.watchId);
       this.watchId = null;
 
@@ -116,6 +125,7 @@ export class LocationTrackerComponent {
   }
 
   private errorWatchLocation(error: GeolocationPositionError): void {
+    this.setTrackingStatus(TrackingState.Error);
     console.error(`ERROR(${error.code}): ${error.message}`);
   }
 
@@ -135,5 +145,13 @@ export class LocationTrackerComponent {
 
   private deg2rad(deg: number): number {
     return deg * (Math.PI / 180)
+  }
+
+  get currentTrackingStateString(): string {
+    return TrackingState[this.currentTrackingState]; // Converts enum number to string name
+  }
+
+  private setTrackingStatus(trackingStatus: TrackingState): void {
+    this.currentTrackingState = trackingStatus;
   }
 }
