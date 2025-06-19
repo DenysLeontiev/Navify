@@ -1,0 +1,42 @@
+import { Coordinate } from "../models/coordinate";
+
+export function calculateAverageSpeed(coordinates: Coordinate[]): number {
+    let averageSpeed: number = 0;
+
+    coordinates.forEach((coord) => {
+        if (coord.speed) {
+            averageSpeed += coord.speed;
+        }
+    });
+
+    averageSpeed /= coordinates.length;
+
+    return averageSpeed;
+}
+
+export function calculateTotalDistanceInMeters(coordinates: Coordinate[]): number {
+    let distance: number = 0;
+
+    for (let i = 0; i < coordinates.length - 1; i++) {
+        distance += calculateDistanceBetweenCoordinatesInMeters(coordinates[i], coordinates[i + 1]);
+    }
+    return distance;
+}
+
+export function calculateDistanceBetweenCoordinatesInMeters(firstCoordinate: Coordinate, secondCoordinate: Coordinate): number {
+    var R = 6371000;
+    var dLat = deg2rad(firstCoordinate.latitude - secondCoordinate.latitude);
+    var dLon = deg2rad(firstCoordinate.longitude - secondCoordinate.longitude);
+    var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(firstCoordinate.latitude)) * Math.cos(deg2rad(secondCoordinate.latitude)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d;
+}
+
+export function deg2rad(deg: number): number {
+    return deg * (Math.PI / 180)
+}

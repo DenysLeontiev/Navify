@@ -1,8 +1,10 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { Coordinate } from '../../models/coordinate';
-import L from 'leaflet';
 import { CommonModule } from '@angular/common';
+import L from 'leaflet';
+
+import { Coordinate } from '../../models/coordinate';
 import { TrackingState } from '../../models/enums/trackingState';
+import { calculateAverageSpeed, calculateTotalDistanceInMeters } from '../../helpers/calculateDistance';
 
 @Component({
   selector: 'app-location-tracker',
@@ -14,144 +16,127 @@ import { TrackingState } from '../../models/enums/trackingState';
 export class LocationTrackerComponent {
 
   @ViewChild('speed') speedElement?: ElementRef<HTMLSpanElement>;
+  @ViewChild('averageSpeed') averageSpeedElement?: ElementRef<HTMLSpanElement>;
   @ViewChild('distanceCovered') distanceCoveredElement?: ElementRef<HTMLSpanElement>;
 
   public coordinates: Coordinate[] = [];
 
-  private currentTrackingState: TrackingState = TrackingState.NotTracking;
-
+  private trackingState: TrackingState = TrackingState.NotTracking;
   private watchId: number | null = null;
 
   private map!: L.Map;
   private polyline!: L.Polyline;
-  private startMarker!: L.Marker;
-  private endMarker!: L.Marker;
+  private startMarker?: L.Marker;
+  private endMarker?: L.Marker;
 
-  private layers = {
+  private readonly tileLayers = {
     street: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }),
     satellite: L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-      attribution: '© Google Satellite',
+      attribution: '© Google Satellite'
     })
   };
 
-  private options = {
+  private readonly geoOptions: PositionOptions = {
     enableHighAccuracy: true,
     timeout: 5000,
-    maximumAge: 0,
+    maximumAge: 0
   };
 
   constructor() {
-    this.setTrackingStatus(TrackingState.NotTracking);
+    this.setTrackingState(TrackingState.NotTracking);
+  }
+
+  public get currentTrackingStateString(): string {
+    return TrackingState[this.trackingState];
   }
 
   public startJourney(): void {
-    this.setTrackingStatus(TrackingState.Tracking);
-    if (!this.map) {
-      this.map = L.map('map').setView([50.45, 30.52], 13);
-      this.layers.street.addTo(this.map);
-
-      this.polyline = L.polyline([], { color: 'blue', weight: 5 }).addTo(this.map);
-    }
+    this.setTrackingState(TrackingState.Tracking);
+    this.initializeMapIfNeeded();
 
     this.watchId = navigator.geolocation.watchPosition(
-      (position) => this.successWatchLocation(position),
-      (error) => this.errorWatchLocation(error),
-      this.options
+      position => this.onLocationSuccess(position),
+      error => this.onLocationError(error),
+      this.geoOptions
     );
   }
 
   public endJourney(): void {
-    if (this.watchId) {
-      this.setTrackingStatus(TrackingState.Finished);
-      navigator.geolocation.clearWatch(this.watchId);
-      this.watchId = null;
+    if (!this.watchId) return;
 
-      // Add final marker and zoom to path
-      const latLngs = this.coordinates.map(c => [c.latitude, c.longitude]) as [number, number][];
-      if (latLngs.length > 1) {
-        if (this.endMarker) {
-          this.map.removeLayer(this.endMarker);
-        }
-        this.endMarker = L.marker(latLngs[latLngs.length - 1]).addTo(this.map).bindPopup('End');
+    this.setTrackingState(TrackingState.Finished);
+    navigator.geolocation.clearWatch(this.watchId);
+    this.watchId = null;
 
-        this.map.fitBounds(this.polyline.getBounds());
-      }
+    this.addEndMarker();
+    this.map.fitBounds(this.polyline.getBounds());
 
-      this.coordinates = [];
-    }
+    this.coordinates = [];
   }
 
-  private successWatchLocation(position: GeolocationPosition): void {
-    const coordinate: Coordinate = {
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-      speed: position.coords.speed,
-      altitude: position.coords.altitude,
-      altitudeAccuracy: position.coords.altitudeAccuracy,
-      heading: position.coords.heading,
-    };
+  private initializeMapIfNeeded(): void {
+    if (this.map) return;
 
-    this.coordinates.push(coordinate);
-
-    if (this.speedElement && this.distanceCoveredElement) {
-      this.speedElement.nativeElement.innerText = coordinate.speed?.toFixed(2)!;
-
-      let distance = 0;
-
-      for (let i = 0; i < this.coordinates.length - 1; i++) {
-        distance += this.calculateDistance(this.coordinates[i], this.coordinates[i + 1]);
-      }
-
-      this.distanceCoveredElement.nativeElement.innerText = distance?.toFixed(2)!;
-    }
-
-    this.buildMap(coordinate);
+    this.map = L.map('map').setView([50.45, 30.52], 13);
+    this.tileLayers.street.addTo(this.map);
+    this.polyline = L.polyline([], { color: 'blue', weight: 5 }).addTo(this.map);
   }
 
-  private buildMap(coordinate: Coordinate): void {
-    const latLng: [number, number] = [coordinate.latitude, coordinate.longitude];
+  private onLocationSuccess(position: GeolocationPosition): void {
+    const coord = this.mapPositionToCoordinate(position);
+    this.coordinates.push(coord);
 
+    this.updateUI(coord);
+    this.updateMap(coord);
+  }
+
+  private onLocationError(error: GeolocationPositionError): void {
+    this.setTrackingState(TrackingState.Error);
+    console.error(`Geolocation error (${error.code}): ${error.message}`);
+  }
+
+  private updateUI(coord: Coordinate): void {
+    this.setText(`${(coord.speed ?? 0).toFixed(2)} km/h`, this.speedElement);
+    this.setText( `${calculateTotalDistanceInMeters(this.coordinates).toFixed(2)} km`, this.distanceCoveredElement);
+    this.setText(`${calculateAverageSpeed(this.coordinates).toFixed(2)} km/h`, this.averageSpeedElement);
+  }
+
+  private updateMap(coord: Coordinate): void {
+    const latLng: [number, number] = [coord.latitude, coord.longitude];
     this.polyline.addLatLng(latLng);
 
-
     if (this.coordinates.length === 1) {
-      if (this.startMarker) this.map.removeLayer(this.startMarker);
+      this.startMarker?.remove();
       this.startMarker = L.marker(latLng).addTo(this.map).bindPopup('Start').openPopup();
       this.map.setView(latLng, 15);
     }
   }
 
-  private errorWatchLocation(error: GeolocationPositionError): void {
-    this.setTrackingStatus(TrackingState.Error);
-    console.error(`ERROR(${error.code}): ${error.message}`);
+  private addEndMarker(): void {
+    if (this.coordinates.length < 2) return;
+
+    this.endMarker?.remove();
+    const lastCoord = this.coordinates[this.coordinates.length - 1];
+    const latLng: [number, number] = [lastCoord.latitude, lastCoord.longitude];
+
+    this.endMarker = L.marker(latLng).addTo(this.map).bindPopup('End');
   }
 
-  private calculateDistance(firstCoordinate: Coordinate, secondCoordinate: Coordinate): number {
-    var R = 6371000; // Radius of the earth in m
-    var dLat = this.deg2rad(firstCoordinate.latitude - secondCoordinate.latitude);  // deg2rad below
-    var dLon = this.deg2rad(firstCoordinate.longitude - secondCoordinate.longitude);
-    var a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.deg2rad(firstCoordinate.latitude)) * Math.cos(this.deg2rad(secondCoordinate.latitude)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2)
-      ;
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c; // Distance in km
-    return d;
+  private setText(text: string, elementRef?: ElementRef<HTMLSpanElement>): void {
+    if (elementRef) {
+      elementRef.nativeElement.innerText = text;
+    }
   }
 
-  private deg2rad(deg: number): number {
-    return deg * (Math.PI / 180)
+  private mapPositionToCoordinate(position: GeolocationPosition): Coordinate {
+    const { latitude, longitude, speed, altitude, altitudeAccuracy, heading } = position.coords;
+    return { latitude, longitude, speed, altitude, altitudeAccuracy, heading };
   }
 
-  get currentTrackingStateString(): string {
-    return TrackingState[this.currentTrackingState]; // Converts enum number to string name
-  }
-
-  private setTrackingStatus(trackingStatus: TrackingState): void {
-    this.currentTrackingState = trackingStatus;
+  private setTrackingState(state: TrackingState): void {
+    this.trackingState = state;
   }
 }
