@@ -72,6 +72,7 @@ export class LocationTrackerComponent implements AfterViewInit {
 
     this.coordinates = [];
     this.updateUI(null);
+    this.resetMap();
     this.setTrackingState(TrackingState.Tracking);
 
     this.watchId = navigator.geolocation.watchPosition(
@@ -137,7 +138,7 @@ export class LocationTrackerComponent implements AfterViewInit {
     let averageSpeed: number = calculateAverageSpeed(this.coordinates) * 3.6;
     let totalDistanceInMeters: number = calculateTotalDistanceInMeters(this.coordinates) / 1000;
 
-    this.setText(`${speed.toFixed()} km/h`, this.speedElement);
+    this.setText(`${speed.toFixed(2)} km/h`, this.speedElement);
     this.setText(`${averageSpeed.toFixed(2)} km/h`, this.averageSpeedElement);
     this.setText(`${totalDistanceInMeters.toFixed(2)} km`, this.distanceCoveredElement);
   }
