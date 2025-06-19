@@ -19,9 +19,10 @@ export class LocationTrackerComponent implements AfterViewInit {
   @ViewChild('averageSpeed') averageSpeedElement?: ElementRef<HTMLSpanElement>;
   @ViewChild('distanceCovered') distanceCoveredElement?: ElementRef<HTMLSpanElement>;
 
+  public TrackingState = TrackingState;
   public coordinates: Coordinate[] = [];
 
-  private trackingState: TrackingState = TrackingState.NotTracking;
+  public currentTrackingState: TrackingState = TrackingState.NotTracking;
   private watchId: number | null = null;
 
   private map!: L.Map;
@@ -64,7 +65,7 @@ export class LocationTrackerComponent implements AfterViewInit {
   }
 
   public get currentTrackingStateString(): string {
-    return TrackingState[this.trackingState];
+    return TrackingState[this.currentTrackingState];
   }
 
   public startJourney(): void {
@@ -78,6 +79,20 @@ export class LocationTrackerComponent implements AfterViewInit {
       error => this.onLocationError(error),
       this.geoOptions
     );
+  }
+
+  private resetMap(): void {
+    if (this.polyline) {
+      this.map.removeLayer(this.polyline);
+    }
+
+    this.map.eachLayer(layer => {
+      if (layer instanceof L.Marker) {
+        this.map.removeLayer(layer);
+      }
+    });
+
+    this.polyline = L.polyline([], { color: 'blue', weight: 5 }).addTo(this.map);
   }
 
   public endJourney(): void {
@@ -118,11 +133,11 @@ export class LocationTrackerComponent implements AfterViewInit {
 
   private updateUI(coord: Coordinate | null): void {
 
-    let speed: number = coord?.speed ?? 0;
-    let averageSpeed: number = calculateAverageSpeed(this.coordinates);
+    let speed: number = coord ? coord.speed! * 3.6 : 0;
+    let averageSpeed: number = calculateAverageSpeed(this.coordinates) * 3.6;
     let totalDistanceInMeters: number = calculateTotalDistanceInMeters(this.coordinates) / 1000;
 
-    this.setText(`${speed} km/h`, this.speedElement);
+    this.setText(`${speed.toFixed()} km/h`, this.speedElement);
     this.setText(`${averageSpeed.toFixed(2)} km/h`, this.averageSpeedElement);
     this.setText(`${totalDistanceInMeters.toFixed(2)} km`, this.distanceCoveredElement);
   }
@@ -179,6 +194,6 @@ export class LocationTrackerComponent implements AfterViewInit {
   }
 
   private setTrackingState(state: TrackingState): void {
-    this.trackingState = state;
+    this.currentTrackingState = state;
   }
 }

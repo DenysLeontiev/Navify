@@ -9,8 +9,14 @@
     </div>
 
     <div class="button-group">
-        <button class="start-btn" (click)="startJourney()">Start Journey</button>
-        <button class="end-btn" (click)="endJourney()">End Journey</button>
+        <button
+            *ngIf="currentTrackingState === TrackingState.NotTracking || currentTrackingState === TrackingState.Finished"
+            (click)="startJourney()">
+            Start Journey
+        </button>
+        <button *ngIf="currentTrackingState === TrackingState.Tracking" (click)="endJourney()">
+            End Journey
+        </button>
     </div>
 
     <div class="map-selector">
