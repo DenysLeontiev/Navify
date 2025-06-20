@@ -17,5 +17,14 @@
     "Error": "Error",
     "language": "Language",
     "start": "Start",
-    "end": "End"
+    "end": "End",
+    "street": "Street",
+    "satellite": "Satellite",
+    "dark": "Dark",
+    "terrain": "Terrain",
+    "outdoors": "Outdoors",
+    "light": "Light",
+    "satelliteStreets": "Satellite Streets",
+    "navigationDay": "Navigation Day",
+    "navigationNight": "Navigation Night"
 }

@@ -17,5 +17,14 @@
     "Error": "Помилка",
     "language": "Мова",
     "start": "Початок",
-    "end": "Кінець"
+    "end": "Кінець",
+    "street": "Вулиця",
+    "satellite": "Супутник",
+    "dark": "Темний",
+    "terrain": "Місцевість",
+    "outdoors": "На вулиці",
+    "light": "Світлий",
+    "satelliteStreets": "Супутникові вулиці",
+    "navigationDay": "Навігація День",
+    "navigationNight": "Навігація Ніч"
 }

@@ -2,7 +2,8 @@
     <h1>📍 Navify</h1>
 
     <div class="tracker-card">
-        <p class="status">{{'status' | translate}}: <span class="status-text">{{currentTrackingStateString | translate}}</span></p>
+        <p class="status">{{'status' | translate}}: <span class="status-text">{{currentTrackingStateString |
+                translate}}</span></p>
         <p>{{'speed' | translate }}: <span class="coord" #speed>-</span></p>
         <p>{{'averageSpeed' | translate }}: <span class="coord" #averageSpeed>-</span></p>
         <p>{{'distanceCovered' | translate }}: <span class="coord" #distanceCovered>-</span></p>
@@ -22,15 +23,15 @@
     <div class="map-selector">
         <label for="mapType">{{'mapType' | translate }}: </label>
         <select id="mapType" (change)="onMapTypeChange($event)">
-            <option value="street">Street</option>
-            <option value="satellite">Satellite</option>
-            <option value="dark">Dark</option>
-            <option value="terrain">Terrain</option>
-            <option value="outdoors">Outdoors</option>
-            <option value="light">Light</option>
-            <option value="satelliteStreets">Satellite Streets</option>
-            <option value="navigationDay">Navigation Day</option>
-            <option value="navigationNight">Navigation Night</option>
+            <option value="street">{{ 'street' | translate }}</option>
+            <option value="satellite">{{ 'satellite' | translate }}</option>
+            <option value="dark">{{ 'dark' | translate }}</option>
+            <option value="terrain">{{ 'terrain' | translate }}</option>
+            <option value="outdoors">{{ 'outdoors' | translate }}</option>
+            <option value="light">{{ 'light' | translate }}</option>
+            <option value="satelliteStreets">{{ 'satelliteStreets' | translate }}</option>
+            <option value="navigationDay">{{ 'navigationDay' | translate }}</option>
+            <option value="navigationNight">{{ 'navigationNight' | translate }}</option>
         </select>
     </div>
 
