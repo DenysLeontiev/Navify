@@ -14,5 +14,6 @@
     "NotTracking": "Not Tracking",
     "Tracking": "Tracking",
     "Finished": "Finished",
-    "Error": "Error"
+    "Error": "Error",
+    "language": "Language"
 }

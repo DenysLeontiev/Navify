@@ -35,6 +35,10 @@
     }
 
     .navbar-actions {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+
         button {
             background-color: white;
             color: $color-primary;
@@ -47,6 +51,18 @@
                 background-color: lighten($color-primary, 10%);
                 color: white;
             }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+
+        .navbar-links,
+        .navbar-actions {
+            margin-top: 1rem;
         }
     }
 }
