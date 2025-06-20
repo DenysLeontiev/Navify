@@ -1,0 +1,18 @@
+{
+    "signIn": "Sign In",
+    "startJourney": "Start Journey",
+    "endJourney": "End Journey",
+    "status": "Status",
+    "speed": "Speed",
+    "averageSpeed": "Average Speed",
+    "distanceCovered": "Distance Covered",
+    "home": "Home",
+    "track": "Track",
+    "mapType": "Map Type",
+    "slogan": "Track. Save. Relive",
+    "startTracking": "Start Tracking",
+    "NotTracking": "Not Tracking",
+    "Tracking": "Tracking",
+    "Finished": "Finished",
+    "Error": "Error"
+}

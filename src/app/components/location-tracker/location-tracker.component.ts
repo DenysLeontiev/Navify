@@ -6,13 +6,14 @@ import { Coordinate } from '../../models/coordinate';
 import { TrackingState } from '../../models/enums/trackingState';
 import { calculateAverageSpeed, calculateTotalDistanceInMeters } from '../../helpers/calculateDistance';
 import { greenIcon, redIcon } from '../../helpers/leafIcons';
-import { environment } from '../../../environments/environment.development';
 import { tileLayers } from '../../helpers/mapTileLayer';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-location-tracker',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './location-tracker.component.html',
   styleUrl: './location-tracker.component.scss'
 })
@@ -40,7 +41,7 @@ export class LocationTrackerComponent implements AfterViewInit {
   private tileLayers = tileLayers;
   private currentTileLayer: L.TileLayer = tileLayers.street;
 
-  constructor() {
+  constructor(public translate: TranslateService) {
     this.setTrackingState(TrackingState.NotTracking);
   }
 
