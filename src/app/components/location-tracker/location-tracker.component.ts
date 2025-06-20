@@ -6,6 +6,8 @@ import { Coordinate } from '../../models/coordinate';
 import { TrackingState } from '../../models/enums/trackingState';
 import { calculateAverageSpeed, calculateTotalDistanceInMeters } from '../../helpers/calculateDistance';
 import { greenIcon, redIcon } from '../../helpers/leafIcons';
+import { environment } from '../../../environments/environment.development';
+import { tileLayers } from '../../helpers/mapTileLayer';
 
 @Component({
   selector: 'app-location-tracker',
@@ -29,23 +31,14 @@ export class LocationTrackerComponent implements AfterViewInit {
   private map!: L.Map;
   private polyline!: L.Polyline;
 
-  private readonly tileLayers = {
-    street: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }),
-    satellite: L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-      attribution: '© Google Satellite'
-    })
-  };
-
   private readonly geoOptions: PositionOptions = {
     enableHighAccuracy: true,
     timeout: 10000,
     maximumAge: 0
   };
 
-  private currentTileLayer: L.TileLayer = this.tileLayers.street;
+  private tileLayers = tileLayers;
+  private currentTileLayer: L.TileLayer = tileLayers.street;
 
   constructor() {
     this.setTrackingState(TrackingState.NotTracking);
