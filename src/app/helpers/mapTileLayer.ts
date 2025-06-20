@@ -49,4 +49,12 @@ export let tileLayers = {
     outdoors: L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
         attribution: '© Mapbox © OpenStreetMap contributors'
     }),
+
+    navigationDay: L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/navigation-day-v1/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
+        attribution: '© Mapbox © OpenStreetMap contributors'
+    }),
+
+    navigationNight: L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/navigation-night-v1/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
+        attribution: '© Mapbox © OpenStreetMap contributors'
+    }),
 };
