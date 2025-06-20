@@ -15,5 +15,7 @@
     "Tracking": "Tracking",
     "Finished": "Finished",
     "Error": "Error",
-    "language": "Language"
+    "language": "Language",
+    "start": "Start",
+    "end": "End"
 }

@@ -143,8 +143,10 @@ export class LocationTrackerComponent implements AfterViewInit {
     this.polyline.addLatLng(latLng);
 
     if (this.coordinates.length === 1) {
-      L.marker(latLng, { icon: greenIcon }).addTo(this.map).bindTooltip('Start').openPopup();
-      this.map.setView(latLng, 15);
+      this.translate.get('start').subscribe((translatedLabel: string) => {
+        L.marker(latLng, { icon: greenIcon }).addTo(this.map).bindTooltip(translatedLabel).openPopup();
+        this.map.setView(latLng, 15);
+      });
     }
   }
 
@@ -154,7 +156,11 @@ export class LocationTrackerComponent implements AfterViewInit {
     const lastCoord = this.coordinates[this.coordinates.length - 1];
     const latLng: [number, number] = [lastCoord.latitude, lastCoord.longitude];
 
-    L.marker(latLng, { icon: redIcon }).addTo(this.map).bindTooltip('End');
+    if (this.coordinates.length === 1) {
+      this.translate.get('end').subscribe((translatedLabel: string) => {
+        L.marker(latLng, { icon: redIcon }).addTo(this.map).bindTooltip(translatedLabel);
+      });
+    }
   }
 
   private setText(text: string, elementRef?: ElementRef<HTMLSpanElement>): void {
