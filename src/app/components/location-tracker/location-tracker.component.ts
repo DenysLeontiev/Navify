@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { Coordinate } from '../../models/coordinate';
 import { TrackingState } from '../../models/enums/trackingState';
 import { calculateAverageSpeed, calculateTotalDistanceInMeters } from '../../helpers/calculateDistance';
+import { greenIcon, redIcon } from '../../helpers/leafIcons';
 
 @Component({
   selector: 'app-location-tracker',
@@ -147,17 +148,6 @@ export class LocationTrackerComponent implements AfterViewInit {
     const latLng: [number, number] = [coord.latitude, coord.longitude];
     this.polyline.addLatLng(latLng);
 
-    let greenIcon = L.icon({
-      iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-green.png',
-      shadowUrl: 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
-
-      iconSize: [38, 95], // size of the icon
-      shadowSize: [50, 64], // size of the shadow
-      iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
-      shadowAnchor: [4, 62],  // the same for the shadow
-      popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
-    });
-
     if (this.coordinates.length === 1) {
       L.marker(latLng, { icon: greenIcon }).addTo(this.map).bindTooltip('Start').openPopup();
       this.map.setView(latLng, 15);
@@ -170,16 +160,6 @@ export class LocationTrackerComponent implements AfterViewInit {
     const lastCoord = this.coordinates[this.coordinates.length - 1];
     const latLng: [number, number] = [lastCoord.latitude, lastCoord.longitude];
 
-    let redIcon = L.icon({
-      iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png',
-      shadowUrl: 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
-
-      iconSize: [38, 95], // size of the icon
-      shadowSize: [50, 64], // size of the shadow
-      iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
-      shadowAnchor: [4, 62],  // the same for the shadow
-      popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
-    });
     L.marker(latLng, { icon: redIcon }).addTo(this.map).bindTooltip('End');
   }
 
