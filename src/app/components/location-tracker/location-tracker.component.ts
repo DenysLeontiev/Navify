@@ -6,13 +6,14 @@ import { Coordinate } from '../../models/coordinate';
 import { TrackingState } from '../../models/enums/trackingState';
 import { calculateAverageSpeed, calculateTotalDistanceInMeters } from '../../helpers/calculateDistance';
 import { greenIcon, redIcon } from '../../helpers/leafIcons';
-import { environment } from '../../../environments/environment.development';
 import { tileLayers } from '../../helpers/mapTileLayer';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-location-tracker',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './location-tracker.component.html',
   styleUrl: './location-tracker.component.scss'
 })
@@ -40,7 +41,7 @@ export class LocationTrackerComponent implements AfterViewInit {
   private tileLayers = tileLayers;
   private currentTileLayer: L.TileLayer = tileLayers.street;
 
-  constructor() {
+  constructor(public translate: TranslateService) {
     this.setTrackingState(TrackingState.NotTracking);
   }
 
@@ -142,8 +143,10 @@ export class LocationTrackerComponent implements AfterViewInit {
     this.polyline.addLatLng(latLng);
 
     if (this.coordinates.length === 1) {
-      L.marker(latLng, { icon: greenIcon }).addTo(this.map).bindTooltip('Start').openPopup();
-      this.map.setView(latLng, 15);
+      this.translate.get('start').subscribe((translatedLabel: string) => {
+        L.marker(latLng, { icon: greenIcon }).addTo(this.map).bindTooltip(translatedLabel).openPopup();
+        this.map.setView(latLng, 15);
+      });
     }
   }
 
@@ -153,7 +156,11 @@ export class LocationTrackerComponent implements AfterViewInit {
     const lastCoord = this.coordinates[this.coordinates.length - 1];
     const latLng: [number, number] = [lastCoord.latitude, lastCoord.longitude];
 
-    L.marker(latLng, { icon: redIcon }).addTo(this.map).bindTooltip('End');
+    if (this.coordinates.length === 1) {
+      this.translate.get('end').subscribe((translatedLabel: string) => {
+        L.marker(latLng, { icon: redIcon }).addTo(this.map).bindTooltip(translatedLabel);
+      });
+    }
   }
 
   private setText(text: string, elementRef?: ElementRef<HTMLSpanElement>): void {
