@@ -1,20 +1,22 @@
+@use '../../../styles/variables' as *;
+
 .tracker-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #FFFAB7;
+    background-color: $color-background;
     padding: 2rem;
     border-radius: 1.5rem;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     font-family: 'Segoe UI', sans-serif;
-    color: #333;
+    color: $color-text;
     max-width: 400px;
     margin: 2rem auto;
 }
 
 h1 {
     margin-bottom: 1rem;
-    color: #5BBCFF;
+    color: $color-primary;
 }
 
 .map-selector {
@@ -25,10 +27,23 @@ h1 {
         border-radius: 5px;
         border: 1px solid #ccc;
     }
+
+    label {
+        font-weight: bolder;
+    }
+
+    select {
+        background-color: $color-secondary;
+        color: white;
+        border: none;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
 }
 
 .tracker-card {
-    background-color: #FFD1E3;
+    background-color: $color-accent;
     border-radius: 1rem;
     padding: 1.5rem;
     width: 100%;
@@ -40,7 +55,7 @@ h1 {
         margin-bottom: 0.5rem;
 
         .status-text {
-            color: #7EA1FF;
+            color: $color-secondary;
         }
     }
 
@@ -74,20 +89,20 @@ h1 {
     }
 
     .start-btn {
-        background-color: #5BBCFF;
+        background-color: $color-primary;
         color: white;
 
         &:hover {
-            background-color: darken(#5BBCFF, 10%);
+            background-color: darken($color-primary, 10%);
         }
     }
 
     .end-btn {
-        background-color: #7EA1FF;
+        background-color: $color-secondary;
         color: white;
 
         &:hover {
-            background-color: darken(#7EA1FF, 10%);
+            background-color: darken($color-secondary, 10%);
         }
 
         &:disabled {
