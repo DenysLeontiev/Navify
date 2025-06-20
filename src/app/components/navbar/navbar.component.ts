@@ -14,10 +14,14 @@ import { FormsModule } from '@angular/forms';
 })
 export class NavbarComponent {
 
-  public selectedLanguage: string = "ua";
+  public selectedLanguage: string = "";
 
   constructor(public translate: TranslateService, private languageService: LanguageService) {
-    this.selectedLanguage = this.translate.currentLang || 'ua';
+    this.setInitialLanguage();
+  }
+
+  private setInitialLanguage() {
+    this.selectedLanguage = this.languageService.getSelectedLanguage();
     this.languageService.setSelectedLanguage(this.selectedLanguage);
   }
 
