@@ -55,6 +55,45 @@
     }
 }
 
+.selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    font-weight: 600;
+
+    label {
+        font-size: 0.95rem;
+    }
+
+    select {
+        appearance: none;
+        background-color: white;
+        color: $color-primary;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.4rem 1.2rem 0.4rem 0.8rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path fill="%235BBCFF" d="M0 0l5 6 5-6z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 0.6rem;
+        padding-right: 2rem;
+
+        &:hover {
+            background-color: lighten(white, 5%);
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(123, 160, 255, 0.5);
+        }
+    }
+}
+
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
