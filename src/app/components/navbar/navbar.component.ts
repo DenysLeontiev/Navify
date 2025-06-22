@@ -17,6 +17,7 @@ export class NavbarComponent {
   public selectedLanguage: string = "";
 
   constructor(public translate: TranslateService, private languageService: LanguageService) {
+    this.languageService.setSelectedLanguageBasedOnBrowser();
     this.setInitialLanguage();
   }
 
