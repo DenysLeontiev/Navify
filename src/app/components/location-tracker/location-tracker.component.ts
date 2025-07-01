@@ -20,6 +20,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class LocationTrackerComponent implements AfterViewInit {
 
   @ViewChild('speed') speedElement?: ElementRef<HTMLSpanElement>;
+  @ViewChild('maxSpeed') maxSpeedElement?: ElementRef<HTMLSpanElement>;
   @ViewChild('averageSpeed') averageSpeedElement?: ElementRef<HTMLSpanElement>;
   @ViewChild('distanceCovered') distanceCoveredElement?: ElementRef<HTMLSpanElement>;
 
@@ -130,10 +131,12 @@ export class LocationTrackerComponent implements AfterViewInit {
   private updateUI(coord: Coordinate | null): void {
 
     let speed: number = coord ? coord.speed! * 3.6 : 0;
+    let maxSpeed: number = Math.max(...this.coordinates.map(x => x.speed!))
     let averageSpeed: number = calculateAverageSpeed(this.coordinates) * 3.6;
     let totalDistanceInMeters: number = calculateTotalDistanceInMeters(this.coordinates) / 1000;
 
     this.setText(`${speed.toFixed(2)} km/h`, this.speedElement);
+    this.setText(`${maxSpeed.toFixed(2)} km/h`, this.maxSpeedElement);
     this.setText(`${averageSpeed.toFixed(2)} km/h`, this.averageSpeedElement);
     this.setText(`${totalDistanceInMeters.toFixed(2)} km`, this.distanceCoveredElement);
   }

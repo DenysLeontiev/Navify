@@ -4,6 +4,7 @@
     "endJourney": "End Journey",
     "status": "Status",
     "speed": "Speed",
+    "maxSpeed": "Maximum Speed",
     "averageSpeed": "Average Speed",
     "distanceCovered": "Distance Covered",
     "home": "Home",
