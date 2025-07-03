@@ -130,9 +130,10 @@ export class LocationTrackerComponent implements AfterViewInit {
 
   private updateUI(coord: Coordinate | null): void {
 
-    let speed: number = coord ? coord.speed! * 3.6 : 0;
-    let maxSpeed: number = Math.max(...this.coordinates.map(x => x.speed!))
-    let averageSpeed: number = calculateAverageSpeed(this.coordinates) * 3.6;
+    const msToKhConst: number = 3.6;
+    let speed: number = coord ? coord.speed! * msToKhConst : 0;
+    let maxSpeed: number = Math.max(...this.coordinates.map(x => x.speed!)) * msToKhConst;
+    let averageSpeed: number = calculateAverageSpeed(this.coordinates) * msToKhConst;
     let totalDistanceInMeters: number = calculateTotalDistanceInMeters(this.coordinates) / 1000;
 
     this.setText(`${speed.toFixed(2)} km/h`, this.speedElement);
