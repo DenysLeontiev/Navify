@@ -123,12 +123,12 @@ export class LocationTrackerComponent implements AfterViewInit, OnDestroy {
     this.coordinates = [];
   }
 
-  getLocationName(lat: number, lon: number): Observable<string> {
+  private getLocationName(lat: number, lon: number): Observable<string> {
     return this.http.get<any>(
       `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
       {
         headers: {
-          'User-Agent': 'YourAppName/1.0', // Nominatim requires this
+          'User-Agent': 'Navify/1.0', // Nominatim requires this
         },
       }
     ).pipe(
