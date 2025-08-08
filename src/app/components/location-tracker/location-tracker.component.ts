@@ -125,13 +125,7 @@ export class LocationTrackerComponent implements AfterViewInit, OnDestroy {
 
   private getLocationName(lat: number, lon: number): Observable<string> {
     return this.http.get<any>(
-      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
-      {
-        headers: {
-          'User-Agent': 'Navify/1.0', // Nominatim requires this
-        },
-      }
-    ).pipe(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`).pipe(
       map(data => data.display_name || 'Unknown location')
     );
   }
