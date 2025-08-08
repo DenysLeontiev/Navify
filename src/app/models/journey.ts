@@ -5,16 +5,26 @@ export class Journey {
     distance: number;
     maxSpeed: number;
     averageSpeed: number;
-    startLocation?: string;
-    endLocation?: string;
+    startLocation: string;
+    endLocation: string;
 
-    constructor(id: string, startTime: Date, endTime: Date, distance: number, maxSpeed: number, averageSpeed: number) {
+    constructor(id: string, 
+                startTime: Date, 
+                endTime: Date, 
+                distance: number, 
+                maxSpeed: number, 
+                averageSpeed: number,
+                startLocation: string,
+                endLocation: string) {
+
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.distance = distance;
         this.maxSpeed = maxSpeed
         this.averageSpeed = averageSpeed;
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
     }
 
     get calculateDuration() {

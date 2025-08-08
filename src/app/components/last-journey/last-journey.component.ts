@@ -14,8 +14,5 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 export class LastJourneyComponent {
 
   constructor(public localStorageService: LocalStorageService,
-    public translate: TranslateService
-  ) {
-
-  }
+    public translate: TranslateService) { }
 }

@@ -12,6 +12,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { LocalStorageService } from '../../_services/localStorage/local-storage.service';
 import { Journey } from '../../models/journey';
 import { v4 as uuidv4 } from 'uuid';
+import { map, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-location-tracker',
@@ -48,7 +50,8 @@ export class LocationTrackerComponent implements AfterViewInit, OnDestroy {
   private currentTileLayer: L.TileLayer = tileLayers.street;
 
   constructor(public translate: TranslateService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private http: HttpClient
   ) {
     this.setTrackingState(TrackingState.NotTracking);
   }
@@ -120,18 +123,44 @@ export class LocationTrackerComponent implements AfterViewInit, OnDestroy {
     this.coordinates = [];
   }
 
+  getLocationName(lat: number, lon: number): Observable<string> {
+    return this.http.get<any>(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
+      {
+        headers: {
+          'User-Agent': 'YourAppName/1.0', // Nominatim requires this
+        },
+      }
+    ).pipe(
+      map(data => data.display_name || 'Unknown location')
+    );
+  }
+
   private saveLastJourney(): void {
     const msToKhConst: number = 3.6;
     let maxSpeed: number = Math.max(...this.coordinates.map(x => x.speed!)) * msToKhConst;
     let averageSpeed: number = calculateAverageSpeed(this.coordinates) * msToKhConst;
     let totalDistanceInKilometers: number = calculateTotalDistanceInMeters(this.coordinates) / 1000;
 
-    let journey: Journey = new Journey(uuidv4(), 
-      this.startTime!, 
-      this.endTime!, 
-      totalDistanceInKilometers, 
-      maxSpeed, 
-      averageSpeed);
+    let startLocation: string = "";
+    let endLocation: string = "";
+
+    this.getLocationName(this.coordinates[0].latitude, this.coordinates[0].longitude).subscribe((response) => {
+      startLocation = response;
+    });
+
+    this.getLocationName(this.coordinates[this.coordinates.length - 1].latitude, this.coordinates[this.coordinates.length - 1].longitude).subscribe((response) => {
+      endLocation = response;
+    });
+
+    let journey: Journey = new Journey(uuidv4(),
+      this.startTime!,
+      this.endTime!,
+      totalDistanceInKilometers,
+      maxSpeed,
+      averageSpeed,
+      startLocation,
+      endLocation);
 
     this.localStorageService.saveLastJourney(journey);
   }
