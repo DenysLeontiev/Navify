@@ -1,0 +1,65 @@
+<ng-container *ngIf="(localStorageService.lastJourney$ | async) as journey; else noJourney">
+  <div class="last-journey-container">
+    <h2>{{ 'lastJourney' | translate }}</h2>
+    <div class="journey-card">
+      <div class="journey-header">
+        <div class="location">
+          <span class="location-label">{{ 'from' | translate }}:</span>
+          <span class="location-value">{{ journey.startLocation }}</span>
+        </div>
+        <div class="arrow">→</div>
+        <div class="location">
+          <span class="location-label">{{ 'to' | translate }}:</span>
+          <span class="location-value">{{ journey.endLocation }}</span>
+        </div>
+      </div>
+      <div class="journey-body">
+        <div class="journey-stats">
+          <div class="stat">
+            <span class="stat-label">{{ 'distanceCovered' | translate }}</span>
+            <span class="stat-value">{{ journey.distance | number:'1.1-1' }} km</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">{{ 'duration' | translate }}</span>
+            <span *ngIf="journey.calculateDuration" class="stat-value">{{ journey.calculateDuration }}</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">{{ 'averageSpeed' | translate }}</span>
+            <span class="stat-value">{{ journey.averageSpeed }} km/h</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">{{ 'maxSpeed' | translate }}</span>
+            <span class="stat-value">{{ journey.maxSpeed }} km/h</span>
+          </div>
+        </div>
+        <div class="journey-timeline">
+          <div class="time">
+            <span class="time-label">{{ 'startTime' | translate }}</span>
+            <span class="time-value">{{ journey.startTime | date:'shortTime' }}</span>
+          </div>
+          <div class="time">
+            <span class="time-label">{{ 'endTime' | translate }}</span>
+            <span class="time-value">{{ journey.endTime | date:'shortTime' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #noJourney>
+  <div class="no-journey-indicator">
+    <div class="no-journey-icon">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="30" stroke="#e0e0e0" stroke-width="4" fill="#f9f9f9" />
+        <path d="M20 32C20 25.3726 25.3726 20 32 20C38.6274 20 44 25.3726 44 32" stroke="#bdbdbd" stroke-width="3"
+          stroke-linecap="round" />
+        <circle cx="32" cy="40" r="2.5" fill="#bdbdbd" />
+      </svg>
+    </div>
+    <div class="no-journey-text">
+      {{ 'noLastJourney' | translate }}<br>
+      <span>{{'startNewJourneyCallToAction' | translate}}</span>
+    </div>
+  </div>
+</ng-template>

@@ -27,5 +27,13 @@
     "light": "Light",
     "satelliteStreets": "Satellite Streets",
     "navigationDay": "Navigation Day",
-    "navigationNight": "Navigation Night"
+    "navigationNight": "Navigation Night",
+    "lastJourney": "Last Journey",
+    "duration": "Duration",
+    "from": "From",
+    "to": "To",
+    "startTime": "Start time",
+    "endTime": "End time",
+    "noLastJourney": "No last Journey here found",
+    "startNewJourneyCallToAction": "Start a new Journey to see it here!"
 }

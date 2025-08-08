@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import L from 'leaflet';
 
@@ -9,6 +9,11 @@ import { greenIcon, redIcon } from '../../helpers/leafIcons';
 import { tileLayers } from '../../helpers/mapTileLayer';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { LocalStorageService } from '../../_services/localStorage/local-storage.service';
+import { Journey } from '../../models/journey';
+import { v4 as uuidv4 } from 'uuid';
+import { map, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-location-tracker',
@@ -17,7 +22,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './location-tracker.component.html',
   styleUrl: './location-tracker.component.scss'
 })
-export class LocationTrackerComponent implements AfterViewInit {
+export class LocationTrackerComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('speed') speedElement?: ElementRef<HTMLSpanElement>;
   @ViewChild('maxSpeed') maxSpeedElement?: ElementRef<HTMLSpanElement>;
@@ -26,6 +31,8 @@ export class LocationTrackerComponent implements AfterViewInit {
 
   public TrackingState = TrackingState;
   public coordinates: Coordinate[] = [];
+  public startTime: Date | null = null;
+  public endTime: Date | null = null;
 
   public currentTrackingState: TrackingState = TrackingState.NotTracking;
   private watchId: number | null = null;
@@ -42,12 +49,19 @@ export class LocationTrackerComponent implements AfterViewInit {
   private tileLayers = tileLayers;
   private currentTileLayer: L.TileLayer = tileLayers.street;
 
-  constructor(public translate: TranslateService) {
+  constructor(public translate: TranslateService,
+    private localStorageService: LocalStorageService,
+    private http: HttpClient
+  ) {
     this.setTrackingState(TrackingState.NotTracking);
   }
 
   ngAfterViewInit(): void {
     this.initializeMapIfNeeded();
+  }
+
+  ngOnDestroy(): void {
+    this.saveLastJourney();
   }
 
   public onMapTypeChange(event: Event): void {
@@ -69,6 +83,8 @@ export class LocationTrackerComponent implements AfterViewInit {
     this.coordinates = [];
     this.updateUI(null);
     this.resetMap();
+    this.startTime = new Date();
+    this.endTime = null;
     this.setTrackingState(TrackingState.Tracking);
 
     this.watchId = navigator.geolocation.watchPosition(
@@ -94,6 +110,8 @@ export class LocationTrackerComponent implements AfterViewInit {
 
   public endJourney(): void {
     if (!this.watchId) return;
+    this.endTime = new Date();
+    this.saveLastJourney();
 
     this.setTrackingState(TrackingState.Finished);
     navigator.geolocation.clearWatch(this.watchId);
@@ -103,6 +121,48 @@ export class LocationTrackerComponent implements AfterViewInit {
     this.map.fitBounds(this.polyline.getBounds());
 
     this.coordinates = [];
+  }
+
+  private getLocationName(lat: number, lon: number): Observable<string> {
+    return this.http.get<any>(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
+      {
+        headers: {
+          'User-Agent': 'Navify/1.0', // Nominatim requires this
+        },
+      }
+    ).pipe(
+      map(data => data.display_name || 'Unknown location')
+    );
+  }
+
+  private saveLastJourney(): void {
+    const msToKhConst: number = 3.6;
+    let maxSpeed: number = Math.max(...this.coordinates.map(x => x.speed!)) * msToKhConst;
+    let averageSpeed: number = calculateAverageSpeed(this.coordinates) * msToKhConst;
+    let totalDistanceInKilometers: number = calculateTotalDistanceInMeters(this.coordinates) / 1000;
+
+    let startLocation: string = "";
+    let endLocation: string = "";
+
+    this.getLocationName(this.coordinates[0].latitude, this.coordinates[0].longitude).subscribe((response) => {
+      startLocation = response;
+    });
+
+    this.getLocationName(this.coordinates[this.coordinates.length - 1].latitude, this.coordinates[this.coordinates.length - 1].longitude).subscribe((response) => {
+      endLocation = response;
+    });
+
+    let journey: Journey = new Journey(uuidv4(),
+      this.startTime!,
+      this.endTime!,
+      totalDistanceInKilometers,
+      maxSpeed,
+      averageSpeed,
+      startLocation,
+      endLocation);
+
+    this.localStorageService.saveLastJourney(journey);
   }
 
   private initializeMapIfNeeded(): void {
