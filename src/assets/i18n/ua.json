@@ -27,5 +27,13 @@
     "light": "Світлий",
     "satelliteStreets": "Супутникові вулиці",
     "navigationDay": "Навігація День",
-    "navigationNight": "Навігація Ніч"
+    "navigationNight": "Навігація Ніч",
+    "lastJourney": "Остання подорож",
+    "duration": "Тривалість",
+    "from": "Від",
+    "to": "До",
+    "startTime": "Початок",
+    "endTime": "Кінець",
+    "noLastJourney": "Немає останньої Подорожі",
+    "startNewJourneyCallToAction": "Почати нову нову Подорож!"
 }

@@ -20,7 +20,7 @@ export class Journey {
     get calculateDuration() {
         let diffMs = this.endTime.getTime() - this.startTime.getTime();
 
-        if (diffMs < 0) diffMs = 0; // avoid negative durations
+        if (diffMs < 0) diffMs = 0;
 
         const hours = Math.floor(diffMs / (1000 * 60 * 60));
         const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
