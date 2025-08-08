@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import L from 'leaflet';
 
@@ -9,6 +9,9 @@ import { greenIcon, redIcon } from '../../helpers/leafIcons';
 import { tileLayers } from '../../helpers/mapTileLayer';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { LocalStorageService } from '../../_services/localStorage/local-storage.service';
+import { Journey } from '../../models/journey';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-location-tracker',
@@ -17,7 +20,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './location-tracker.component.html',
   styleUrl: './location-tracker.component.scss'
 })
-export class LocationTrackerComponent implements AfterViewInit {
+export class LocationTrackerComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('speed') speedElement?: ElementRef<HTMLSpanElement>;
   @ViewChild('maxSpeed') maxSpeedElement?: ElementRef<HTMLSpanElement>;
@@ -26,6 +29,8 @@ export class LocationTrackerComponent implements AfterViewInit {
 
   public TrackingState = TrackingState;
   public coordinates: Coordinate[] = [];
+  public startTime: Date | null = null;
+  public endTime: Date | null = null;
 
   public currentTrackingState: TrackingState = TrackingState.NotTracking;
   private watchId: number | null = null;
@@ -42,12 +47,18 @@ export class LocationTrackerComponent implements AfterViewInit {
   private tileLayers = tileLayers;
   private currentTileLayer: L.TileLayer = tileLayers.street;
 
-  constructor(public translate: TranslateService) {
+  constructor(public translate: TranslateService,
+    private localStorageService: LocalStorageService
+  ) {
     this.setTrackingState(TrackingState.NotTracking);
   }
 
   ngAfterViewInit(): void {
     this.initializeMapIfNeeded();
+  }
+
+  ngOnDestroy(): void {
+    this.saveLastJourney();
   }
 
   public onMapTypeChange(event: Event): void {
@@ -69,6 +80,8 @@ export class LocationTrackerComponent implements AfterViewInit {
     this.coordinates = [];
     this.updateUI(null);
     this.resetMap();
+    this.startTime = new Date();
+    this.endTime = null;
     this.setTrackingState(TrackingState.Tracking);
 
     this.watchId = navigator.geolocation.watchPosition(
@@ -94,6 +107,8 @@ export class LocationTrackerComponent implements AfterViewInit {
 
   public endJourney(): void {
     if (!this.watchId) return;
+    this.endTime = new Date();
+    this.saveLastJourney();
 
     this.setTrackingState(TrackingState.Finished);
     navigator.geolocation.clearWatch(this.watchId);
@@ -103,6 +118,22 @@ export class LocationTrackerComponent implements AfterViewInit {
     this.map.fitBounds(this.polyline.getBounds());
 
     this.coordinates = [];
+  }
+
+  private saveLastJourney(): void {
+    const msToKhConst: number = 3.6;
+    let maxSpeed: number = Math.max(...this.coordinates.map(x => x.speed!)) * msToKhConst;
+    let averageSpeed: number = calculateAverageSpeed(this.coordinates) * msToKhConst;
+    let totalDistanceInKilometers: number = calculateTotalDistanceInMeters(this.coordinates) / 1000;
+
+    let journey: Journey = new Journey(uuidv4(), 
+      this.startTime!, 
+      this.endTime!, 
+      totalDistanceInKilometers, 
+      maxSpeed, 
+      averageSpeed);
+
+    this.localStorageService.saveLastJourney(journey);
   }
 
   private initializeMapIfNeeded(): void {

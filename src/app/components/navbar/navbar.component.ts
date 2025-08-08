@@ -4,6 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LanguageService } from '../../_services/language/language.service';
 import { FormsModule } from '@angular/forms';
+import { Journey } from '../../models/journey';
+import { LocalStorageService } from '../../_services/localStorage/local-storage.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,7 +18,7 @@ export class NavbarComponent {
 
   public selectedLanguage: string = "";
 
-  constructor(public translate: TranslateService, private languageService: LanguageService) {
+  constructor(public translate: TranslateService, private languageService: LanguageService, private l: LocalStorageService) {
     this.languageService.setSelectedLanguageBasedOnBrowser();
     this.setInitialLanguage();
   }
