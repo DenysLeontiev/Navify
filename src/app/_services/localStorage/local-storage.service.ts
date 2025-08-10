@@ -15,8 +15,8 @@ export class LocalStorageService {
   public getLastJourney(): Journey | null {
     let journeyStringified: string | null = localStorage.getItem(this.lastJourneyLocalStorageKey);
 
-    let journey: Journey | null = journeyStringified 
-      ? JSON.parse(journeyStringified) 
+    let journey: Journey | null = journeyStringified
+      ? JSON.parse(journeyStringified)
       : null;
 
     return journey;
@@ -31,5 +31,11 @@ export class LocalStorageService {
     } else {
       localStorage.removeItem(this.lastJourneyLocalStorageKey);
     }
+  }
+
+  public deleteLastJourney(): void {
+    this.lastJourneySource.next(null);
+
+    localStorage.removeItem(this.lastJourneyLocalStorageKey);
   }
 }

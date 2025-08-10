@@ -16,4 +16,8 @@ export class LastJourneyComponent {
 
   constructor(public localStorageService: LocalStorageService,
     public translate: TranslateService) { }
+
+  public deleteLastJourney():void {
+    this.localStorageService.deleteLastJourney();
+  }
 }

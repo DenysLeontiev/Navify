@@ -12,6 +12,9 @@
           <span class="location-label">{{ 'to' | translate }}:</span>
           <span class="location-value">{{ journey.endLocation.trim() }}</span>
         </div>
+          <button class="delete-journey-btn" title="Delete Last Journey" (click)="deleteLastJourney()">
+            <i class="fa fa-trash"></i>
+          </button>
       </div>
       <div class="journey-body">
         <div class="journey-stats">

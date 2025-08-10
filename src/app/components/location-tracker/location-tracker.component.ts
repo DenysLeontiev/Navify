@@ -126,8 +126,8 @@ export class LocationTrackerComponent implements AfterViewInit, OnDestroy {
   private getLocationName(lat: number, lon: number): Observable<string> {
     return this.http.get<any>(
       `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`).pipe(
-      map(data => data.display_name || 'Unknown location')
-    );
+        map(data => data.display_name || 'Unknown location')
+      );
   }
 
   private saveLastJourney(): void {
@@ -139,13 +139,15 @@ export class LocationTrackerComponent implements AfterViewInit, OnDestroy {
     let startLocation: string = "";
     let endLocation: string = "";
 
-    this.getLocationName(this.coordinates[0].latitude, this.coordinates[0].longitude).subscribe((response) => {
-      startLocation = response;
-    });
+    if (this.coordinates.length > 0) {
+      this.getLocationName(this.coordinates[0].latitude, this.coordinates[0].longitude).subscribe((response) => {
+        startLocation = response;
+      });
 
-    this.getLocationName(this.coordinates[this.coordinates.length - 1].latitude, this.coordinates[this.coordinates.length - 1].longitude).subscribe((response) => {
-      endLocation = response;
-    });
+      this.getLocationName(this.coordinates[this.coordinates.length - 1].latitude, this.coordinates[this.coordinates.length - 1].longitude).subscribe((response) => {
+        endLocation = response;
+      });
+    }
 
     let journey: Journey = new Journey(uuidv4(),
       this.startTime!,
