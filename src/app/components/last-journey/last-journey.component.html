@@ -5,31 +5,31 @@
       <div class="journey-header">
         <div class="location">
           <span class="location-label">{{ 'from' | translate }}:</span>
-          <span class="location-value">{{ journey.startLocation }}</span>
+          <span class="location-value">{{ journey.startLocation.trim() }}</span>
         </div>
         <div class="arrow">→</div>
         <div class="location">
           <span class="location-label">{{ 'to' | translate }}:</span>
-          <span class="location-value">{{ journey.endLocation }}</span>
+          <span class="location-value">{{ journey.endLocation.trim() }}</span>
         </div>
       </div>
       <div class="journey-body">
         <div class="journey-stats">
           <div class="stat">
             <span class="stat-label">{{ 'distanceCovered' | translate }}</span>
-            <span class="stat-value">{{ journey.distance | number:'1.1-1' }} km</span>
+            <span class="stat-value">{{ journey.distance | number:'1.2-2' }} km</span>
           </div>
           <div class="stat">
             <span class="stat-label">{{ 'duration' | translate }}</span>
-            <span *ngIf="journey.calculateDuration" class="stat-value">{{ journey.calculateDuration }}</span>
+            <span *ngIf="journey.calculateDuration" class="stat-value">{{ journey.calculateDuration | duration }}</span>
           </div>
           <div class="stat">
             <span class="stat-label">{{ 'averageSpeed' | translate }}</span>
-            <span class="stat-value">{{ journey.averageSpeed }} km/h</span>
+            <span class="stat-value">{{ journey.averageSpeed | number:'1.2-2' }} km/h</span>
           </div>
           <div class="stat">
             <span class="stat-label">{{ 'maxSpeed' | translate }}</span>
-            <span class="stat-value">{{ journey.maxSpeed }} km/h</span>
+            <span class="stat-value">{{ journey.maxSpeed | number:'1.2-2' }} km/h</span>
           </div>
         </div>
         <div class="journey-timeline">
