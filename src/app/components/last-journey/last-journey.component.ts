@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LocalStorageService } from '../../_services/localStorage/local-storage.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DurationPipe } from '../../_pipes/duration/duration.pipe';
+import { JourneyService } from '../../_services/journey/journey.service';
 
 @Component({
   selector: 'app-last-journey',
@@ -14,10 +14,10 @@ import { DurationPipe } from '../../_pipes/duration/duration.pipe';
 
 export class LastJourneyComponent {
 
-  constructor(public localStorageService: LocalStorageService,
+  constructor(public journeyService: JourneyService,
     public translate: TranslateService) { }
 
   public deleteLastJourney():void {
-    this.localStorageService.deleteLastJourney();
+    this.journeyService.deleteLastJourney();
   }
 }

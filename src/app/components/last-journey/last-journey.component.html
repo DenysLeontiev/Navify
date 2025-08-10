@@ -1,4 +1,4 @@
-<ng-container *ngIf="(localStorageService.lastJourney$ | async) as journey; else noJourney">
+<ng-container *ngIf="(journeyService.lastJourney$ | async) as journey; else noJourney">
   <div class="last-journey-container">
     <h2>{{ 'lastJourney' | translate }}</h2>
     <div class="journey-card">

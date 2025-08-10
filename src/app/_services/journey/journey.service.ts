@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class LocalStorageService {
+export class JourneyService {
 
   private lastJourneyLocalStorageKey: string = "lastJourneyKey";
 

@@ -4,8 +4,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LanguageService } from '../../_services/language/language.service';
 import { FormsModule } from '@angular/forms';
-import { Journey } from '../../models/journey';
-import { LocalStorageService } from '../../_services/localStorage/local-storage.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -20,7 +18,7 @@ export class NavbarComponent {
   public selectedLanguage: string = "";
   public isMenuCollapsed = true;
 
-  constructor(public translate: TranslateService, private languageService: LanguageService, private l: LocalStorageService) {
+  constructor(public translate: TranslateService, private languageService: LanguageService) {
     this.languageService.setSelectedLanguageBasedOnBrowser();
     this.setInitialLanguage();
   }

@@ -9,11 +9,11 @@ import { greenIcon, redIcon } from '../../helpers/leafIcons';
 import { tileLayers } from '../../helpers/mapTileLayer';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LocalStorageService } from '../../_services/localStorage/local-storage.service';
 import { Journey } from '../../models/journey';
 import { v4 as uuidv4 } from 'uuid';
 import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { JourneyService } from '../../_services/journey/journey.service';
 
 @Component({
   selector: 'app-location-tracker',
@@ -50,7 +50,7 @@ export class LocationTrackerComponent implements AfterViewInit, OnDestroy {
   private currentTileLayer: L.TileLayer = tileLayers.street;
 
   constructor(public translate: TranslateService,
-    private localStorageService: LocalStorageService,
+    private journeyService: JourneyService,
     private http: HttpClient
   ) {
     this.setTrackingState(TrackingState.NotTracking);
@@ -158,7 +158,7 @@ export class LocationTrackerComponent implements AfterViewInit, OnDestroy {
       startLocation,
       endLocation);
 
-    this.localStorageService.saveLastJourney(journey);
+    this.journeyService.saveLastJourney(journey);
   }
 
   private initializeMapIfNeeded(): void {
