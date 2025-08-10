@@ -1,21 +1,29 @@
 <nav class="navbar">
-    <div class="navbar-logo">
-        <img routerLink="/home"
-            src="https://cdn4.iconfinder.com/data/icons/map-and-navigation-cute-style-vol-4/52/tracker__gps__location__navigation__pin__point__graph-512.png"
-            alt="My App Logo" />
-    </div>
+  <div class="navbar-brand">
+    <img routerLink="/home"
+         src="https://cdn4.iconfinder.com/data/icons/map-and-navigation-cute-style-vol-4/52/tracker__gps__location__navigation__pin__point__graph-512.png"
+         alt="Navify Logo" class="logo" />
+    <a routerLink="/home" class="brand-name">Navify</a>
+  </div>
+
+  <button class="navbar-toggler" (click)="isMenuCollapsed = !isMenuCollapsed">
+    <i class="fa" [ngClass]="isMenuCollapsed ? 'fa-bars' : 'fa-times'"></i>
+  </button>
+
+  <div class="navbar-collapse" [class.collapsed]="isMenuCollapsed">
     <ul class="navbar-links">
-        <li><a routerLink="/home">{{'home' | translate}}</a></li>
-        <li><a routerLink="/location-tracker">{{'track' | translate}}</a></li>
-        <li><a routerLink="/last-journey">{{ 'lastJourney' | translate }}</a></li>
+      <li><a routerLink="/home" routerLinkActive="active" (click)="isMenuCollapsed = true">{{'home' | translate}}</a></li>
+      <li><a routerLink="/location-tracker" routerLinkActive="active" (click)="isMenuCollapsed = true">{{'track' | translate}}</a></li>
+      <li><a routerLink="/last-journey" routerLinkActive="active" (click)="isMenuCollapsed = true">{{ 'lastJourney' | translate }}</a></li>
     </ul>
     <div class="navbar-actions">
-        <div class="selector">
-            <label for="mapType">{{ 'language' | translate }}: </label>
-            <select id="mapType" [(ngModel)]="selectedLanguage" (change)="onLanguageChange($event)">
-                <option value="ua">Українська</option>
-                <option value="en">English</option>
-            </select>
-        </div>
+      <div class="language-selector">
+        <i class="fa fa-globe"></i>
+        <select [(ngModel)]="selectedLanguage" (change)="onLanguageChange($event)">
+          <option value="ua">UA</option>
+          <option value="en">EN</option>
+        </select>
+      </div>
     </div>
+  </div>
 </nav>

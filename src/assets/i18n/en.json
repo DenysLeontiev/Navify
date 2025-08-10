@@ -35,5 +35,7 @@
     "startTime": "Start time",
     "endTime": "End time",
     "noLastJourney": "No last Journey here found",
-    "startNewJourneyCallToAction": "Start a new Journey to see it here!"
+    "startNewJourneyCallToAction": "Start a new Journey to see it here!",
+    "trackerTitle": "Location Tracker",
+    "trackerSubtitle": "Your real-time journey companion"
 }
