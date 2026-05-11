@@ -1,6 +1,6 @@
 <ng-container *ngIf="(journeyService.lastJourney$ | async) as journey; else noJourney">
   <div class="last-journey-container">
-    <h2>{{ 'lastJourney' | translate }}</h2>
+    <h1>{{ 'lastJourney' | translate }}</h1>
     <div class="journey-card">
       <div class="journey-header">
         <div class="location">
@@ -61,8 +61,8 @@
       </svg>
     </div>
     <div class="no-journey-text">
-      {{ 'noLastJourney' | translate }}<br>
-      <span>{{'startNewJourneyCallToAction' | translate}}</span>
+      <strong>{{ 'noLastJourney' | translate }}</strong><br>
+      <span class="cta-start-journey">{{'startNewJourneyCallToAction' | translate}}</span>
     </div>
   </div>
 </ng-template>
