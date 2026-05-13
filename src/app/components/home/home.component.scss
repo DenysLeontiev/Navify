@@ -26,12 +26,40 @@ h1 {
     color: $color-primary;
 }
 
-p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
+.subheadline {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: darken($color-primary, 15%);
+}
+
+.hero-description {
+    font-size: 1rem;
     color: $color-text;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
 }
 
 button {
     width: 100%;
+}
+
+.primary-cta {
+    background-color: $color-primary;
+    color: white;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.primary-cta:hover {
+    background-color: darken($color-primary, 15%);
+}
+
+.primary-cta:active {
+    background-color: darken($color-primary, 25%);
 }
